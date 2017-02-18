@@ -53,6 +53,8 @@ gameState.prototype = {
     },
 
     update: function () {
+      
+
 
     },
 };
@@ -65,6 +67,10 @@ function clickHandler(tile, pointer) {
       }
       else{
         tile.loadTexture('tile');
+        for(i = 0; i < active.length;i++){
+          if(active[i]==tile)
+            active.splice(i,1);
+        }
       }
     }
 }
