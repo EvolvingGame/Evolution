@@ -169,22 +169,26 @@ gameState.prototype = {
         if(time++%10 == 0){
             if(active.length > 0){
                 var myInd = Math.floor(Math.random() * active.length);
-                console.log("I is: ");
-                console.log(myInd);
                 currStruct = active[myInd];
                 var keys = Object.keys(currStruct);
                 var key;
                 do{
+                    var cont = false;
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
-                    console.log(active.length);
+                    if(nextStruct != null&&contains(nextStruct))
+                        cont = true;
                 }                
-                while(nextStruct == null || contains(nextStruct));
+                while(nextStruct == null || (cont && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-                nextStruct['tile'].loadTexture('earth');
+                if(nextStruct['tile']['key'] == 'tile'){
+                    active.push(nextStruct);
+                }
+
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);  
                 currStruct['tile'].loadTexture('tile');
                 active.splice(myInd,1);
-                active.push(nextStruct);
+                
             }
         }
     }
@@ -225,7 +229,6 @@ function getTileStruct(tile){
     row = Math.round(row);
     col = Math.floor(x/(tileWidth*0.75)/2);
     var index = numWide*row-Math.floor(row/2)+col;
-    console.log(index);
     return allStructs[index];
 }
 
