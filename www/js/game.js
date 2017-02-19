@@ -15,7 +15,7 @@ var time = 0;
 var allStructs = new Array();
 var tileHeight;
 var tileWidth;
-var numWide = 6;
+var numWide = 3;
 
 gameState.prototype = {
 
@@ -37,7 +37,6 @@ gameState.prototype = {
 
         for(var j = 0; j < numHigh; j++){
             for(var i = 0; i < numWide; i++){
-                // var nextTile = {tile:null,x:null,y:null};
                 var nextTile;
                 if(j%2==0){
                     tile = game.add.sprite(1.5*i*tileWidth,(j/2)*tileHeight,'tile');
@@ -149,9 +148,9 @@ gameState.prototype = {
     },
 
     update: function () {
-
-        if(time++%50 == 0){
-            for(var myInd = 0; myInd < active.length; myInd++){
+        if(time++%10 == 0){
+            if(active.length > 0){
+                var myInd = Math.floor(Math.random() * active.length);
                 console.log("I is: ");
                 console.log(myInd);
                 currStruct = active[myInd];
@@ -166,11 +165,8 @@ gameState.prototype = {
 
                 nextStruct['tile'].loadTexture('earth');
                 currStruct['tile'].loadTexture('tile');
-                console.log("I is: ");
-                console.log(myInd);
-                console.log(active.splice(myInd,1));
+                active.splice(myInd,1);
                 active.push(nextStruct);
-                console.log(active);
             }
         }
     }
