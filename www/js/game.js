@@ -83,6 +83,9 @@ gameState.prototype = {
             var isRighttile=false;
             var isToptile=false;
             var isBottile=false;
+            var isTopOdd=false;
+            var isBotOdd=false;
+
 
             //if tile is on left side left neighbors don't exist
             if (i%(2*numWide-1)==0){
@@ -111,6 +114,14 @@ gameState.prototype = {
                 console.log(i);
                 isBottile=true;
             }
+
+            if(i>numWide&&i<2*(numWide-1)){
+                isTopOdd=true;
+            }
+            else if(i < (allStructs.length-numWide) && i > (allStructs.length-2*(numWide-1))){
+                isBotOdd=true;
+            }
+
             if(isToptile)
                 if(isRighttile)
                     allStructs[i] = {'tile':tile,'upLeft':null,'up':null,'upRight':null,
@@ -137,6 +148,13 @@ gameState.prototype = {
             else if(isRighttile)
                     allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':null,
                                  'downLeft':dnLeft, 'down':dn, 'downRight':null};
+            else if(isTopOdd)
+                allStructs[i] = {'tile':tile, 'upLeft':upLeft, 'up':null, upRight:upRight,
+                              'downLeft':dnLeft, 'down':dn, 'downRight': dnRight};
+            else if(isBotOdd)
+                allStructs[i] = {'tile':tile, 'upLeft':upLeft, 'up':up, upRight:upRight,
+                                              'downLeft':dnLeft, 'down':null, 'downRight': dnRight};
+
             else{
                 allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':upRight,
                              'downLeft':dnLeft, 'down':dn, 'downRight':dnRight};
