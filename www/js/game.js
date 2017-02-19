@@ -1,5 +1,5 @@
-var gameHeight = 640;
-var gameWidth  = 480;
+var gameHeight = 800;
+var gameWidth  = 800;
 
 var states = {
     game: "game",
@@ -14,13 +14,19 @@ var time = 0;
 var allStructs = new Array();
 var tileHeight;
 var tileWidth;
-var numWide = 6;
+var numWide = 5;
+var go = 0;
+var timer = 0;
+var text;
 
 gameState.prototype = {
 
     preload: function () {
       game.load.image('tile','img/hexagon.svg');
       game.load.image('earth','img/hexagon_earth.svg');
+      game.load.image('predator','img/yellow.svg');
+        game.load.image('prey','img/blue.svg');
+game.load.image('button', 'img/start.png')
     },
 
     create: function () {
@@ -143,6 +149,12 @@ gameState.prototype = {
 
             allStructs.push(tileStruct);
         }
+
+        button = game.add.button(game.world.centerX - gameWidth/2+25, gameHeight-50, 'button', actionOnClick, this, 0, 0, 0);
+        //button.style.background("#333333");
+        var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: 100, align: "center", backgroundColor: "#ffff00" };
+        text = game.add.text(100,gameHeight-50,timer ,style);
+
     },
 
     update: function () {
@@ -151,15 +163,77 @@ gameState.prototype = {
                 console.log(active[i])
             }
         }
+text.setText(Math.round(timer/60*100)/100);
+        // if(go==0) {
+        //     for (j = 0; j < active.length; j++) {
+        //
+        //         if (active.get(i).LoadTexture() == "prey") {
+        //             var numchildren = active.get(i).getNumChildren();
+        //             if (OnResource()) {
+        //                 //moves
+        //             }
+        //
+        //             else if (numchildren == 0) {
+        //                 //nothing
+        //             }
+        //             else if (numchildren == 1) {
+        //                 //reproduce and doesnt move
+        //             }
+        //             else if (numchildren == 2 || numchildren == 3 || numchildren == 4) {
+        //                 //moves randomly
+        //             }
+        //             else {
+        //                 //dies from overpolulation
+        //             }
+        //         }
+        //         else if (active.get(i).LoadTexture() == "predator") {
+        //             var numchildren = active.get(i).getNumChildren();
+        //             if (PreyIsNeighbor()) {
+        //                 //moves and kills prey
+        //             }
+        //
+        //             else if (numchildren == 0) {
+        //                 //moves
+        //             }
+        //             else if (numchildren == 1) {
+        //                 //reproduce and doesnt move
+        //             }
+        //             else if (numchildren == 2 || numchildren == 3) {
+        //                 //moves randomly
+        //             }
+        //             else {
+        //                 //dies from overpolulation
+        //             }
+        //         }
+        //         else {
+        //
+        //         }
+        //     }
+        // }
+
+        if(go==0) {
+            timer++;
+        }
+
+
+
     },
 };
 
 function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
-      if(tile.key == 'tile'){
+        if(tile.key == 'tile'){
         tile.loadTexture('earth');
         active.push(getTile(tile));
       }
+      else if(tile.key == "earth"){
+            tile.loadTexture('prey');
+            active.push(getTile(tile));
+        }
+        else if(tile.key == "prey"){
+            tile.loadTexture('predator');
+            active.push(getTile(tile));
+        }
       else{
         deactivateTile(tile);
       }
@@ -176,6 +250,21 @@ function deactivateTile(tile){
     return false;
 }
 
+function actionOnClick(){
+    console.log("button works");
+    console.log(timer/60);
+
+    if(go ==0){
+
+
+        go = 1;
+    }
+    else{
+
+        go = 0;
+    }
+}
+
 
 function getTile(tile){
     var x = tile.x;
@@ -190,6 +279,7 @@ function getTile(tile){
     col = Math.floor(x/(tileWidth*0.75)/2);
     var index = numWide*row-Math.floor(row/2)+col;
     return allStructs[index];
+
 }
 
 var game = new Phaser.Game(gameWidth,gameHeight, Phaser.AUTO, 'gameDiv');
