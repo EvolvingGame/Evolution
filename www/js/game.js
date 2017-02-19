@@ -387,18 +387,21 @@ function moveRandom(currStruct){
 
 function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
-        if(tile.key == 'tile'){
+        if(tile['key']=='tile'){
             tile.loadTexture(currentColor);
-            var tileStruct = getTileStruct(tile);
-            tileStruct['time'] = time;
-            active.push(tileStruct);
-        }
-        else{
-            tile.loadTexture('tile');
-            for(var i = 0; i < active.length;i++){
-                if(active[i].tile.x==tile.x && active[i].tile.y == tile.y)
-                    active.splice(i,1);
+            if(currentColor != 'earth'&& currentColor != 'resource'){
+                var tileStruct = getTileStruct(tile);
+                active.push(tileStruct);
+                console.log('Active');
+                console.log(tileStruct);
+                console.log(active);
+                console.log(go);
             }
+        }else{
+            for(var i = 0; i < active.length;i++)
+                    if(active[i].tile.x==tile.x && active[i].tile.y == tile.y)
+                        active.splice(i,1);
+            tile.loadTexture('tile');
         }
     }
 }
@@ -429,7 +432,6 @@ function actionOnClick2(){
 }
 
 function getTileStruct(tile){
-
     var x = tile.x;
     var y = tile.y;
     var row = 0;
