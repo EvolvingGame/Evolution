@@ -165,10 +165,9 @@ gameState.prototype = {
             }
         }
 
-        for(k = 0;k<numResources;k++){
-            r = allStructs.length;
+        for(var k = 0;k < numResources;k++){
+            var r = allStructs.length;
             allStructs[Math.floor(Math.random() * r)]["tile"].loadTexture("resource");
-            active.push(allStructs[k]);
         }
 
 
@@ -182,6 +181,16 @@ gameState.prototype = {
     },
 
     update: function () {
+
+        if(time%2000 == 0){
+            var ind;
+            var count = 0;
+            do{
+                ind = Math.floor(Math.random()*allStructs.length);
+            }while(allStructs[ind]['tile']['key'] != 'tile' && count++ < 10);
+            allStructs[ind]['tile'].loadTexture('resource')
+        }
+
         if(time++%20 == 0 && go==0 && active.length > 0){
             var myInd;
             var currStruct;
@@ -196,14 +205,15 @@ gameState.prototype = {
                 myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
 
-                if(currStruct["tile"]["key"]=="resource"){
-                    return;
-                }
+                if(currStruct["tile"]["key"]=="resource")
+                    continue;
                 var keys = Object.keys(currStruct);
+
 
 
                 console.log(currStruct['time']);
                 if(time-currStruct['time'] > 20000){
+
                     currStruct['tile'].loadTexture('tile');
                     currStruct['time']=0;
                     active.splice(myInd,1);
@@ -234,6 +244,11 @@ gameState.prototype = {
                     }
                 }
 
+                // If it is a pey check for resources
+                if(move && currStruct['tile']['key'] == 'prey'){
+                    key = findNearest(currStruct,'resource');
+                }
+
                 // Assign a key if the key is null
                 if(move && key == null)
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
@@ -258,15 +273,18 @@ gameState.prototype = {
             }while(nextStruct == null || (contains(nextStruct) && 
                 nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-
-
+            nextStruct['time']=time;
+            currStruct['time'] = time;
             if(nextStruct['tile']['key'] == 'tile'){
                 active.push(nextStruct);
-                nextStruct['time']=time;
                 active.splice(myInd,1);
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 currStruct['tile'].loadTexture('tile');
-            }else{
+            }else if(nextStruct['tile']['key'] == 'resource'){
+                currStruct['time'] = time;
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
+                active.push(nextStruct);
+            }else if(nextStruct['tile']['key'] == 'prey'){
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);
             }
 
