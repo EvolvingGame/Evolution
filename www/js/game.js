@@ -182,7 +182,7 @@ gameState.prototype = {
 
     update: function () {
 
-        if(time%2000 == 0){
+        if(time%200 == 0){
             var ind;
             var count = 0;
             do{
@@ -191,7 +191,15 @@ gameState.prototype = {
             allStructs[ind]['tile'].loadTexture('resource')
         }
 
-        if(time++%20 == 0 && go==0 && active.length > 0){
+        if(time%1000 == 0)
+            for(var i = 0; i < active.length; i++)
+                if(active[i]['time']-time > 200){
+                    currStruct['tile'].loadTexture('tile');
+                    currStruct['time']=0;
+                    active.splice(myInd,1);
+                }
+
+        if(time++%2 == 0 && go==0 && active.length > 0){
             var myInd;
             var currStruct;
             var key;
@@ -212,8 +220,7 @@ gameState.prototype = {
 
 
                 console.log(currStruct['time']);
-                if(time-currStruct['time'] > 20000){
-
+                if(time-currStruct['time'] > 200){
                     currStruct['tile'].loadTexture('tile');
                     currStruct['time']=0;
                     active.splice(myInd,1);
@@ -464,7 +471,7 @@ function compare(tileStruct1,tileStruct2){
 }
 
 function findNearest(tileStructIn,type){
-    var maxDepth = 23;
+    var maxDepth = 12;
     var tileStructList = new Array();
     var oldStructList = new Array();
     tileStructList.push(tileStructIn);
