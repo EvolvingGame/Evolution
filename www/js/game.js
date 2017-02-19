@@ -15,7 +15,7 @@ var time = 0;
 var allStructs = new Array();
 var tileHeight;
 var tileWidth;
-var numWide = 8;
+var numWide = 4;
 
 gameState.prototype = {
 
@@ -26,7 +26,7 @@ gameState.prototype = {
 
     create: function () {
         var hexWidth= 696;
-        var hexHeight = 800;
+        var hexHeight = 1600;
 
         // Desired Tile Width
         tileWidth = Math.trunc(gameWidth / (numWide*3/2));
@@ -184,7 +184,9 @@ gameState.prototype = {
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
                     console.log(active.length);
-                    if (counter==6) break;
+                    counter ++;
+                    if (counter==6 && nextStruct != null) break;
+
                 }                
                 while(nextStruct == null || contains(nextStruct));
 
