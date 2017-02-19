@@ -1,5 +1,5 @@
-var gameHeight = 800;
-var gameWidth  = 800;
+var gameHeight = document.documentElement.clientHeight-40;
+var gameWidth  = document.documentElement.clientWidth-20;
 
 var states = {
     game: "game",
@@ -16,7 +16,7 @@ var allStructs = new Array();
 var tileHeight;
 var tileWidth;
 
-var numWide = 5;
+var numWide = 6;
 var go = 0;
 var timer = 0;
 var text;
@@ -26,11 +26,11 @@ var currentColor = "earth";
 gameState.prototype = {
 
     preload: function () {
-      game.load.image('tile','img/hexagon.svg');
-      game.load.image('earth','img/hexagon_earth.svg');
-      game.load.image('predator','img/yellow.svg');
+        game.load.image('tile','img/hexagon.svg');
+        game.load.image('earth','img/hexagon_earth.svg');
+        game.load.image('predator','img/yellow.svg');
         game.load.image('prey','img/blue.svg');
-game.load.image('button', 'img/start.png')
+        game.load.image('button', 'img/start.png')
         game.load.image('buttoncolor', 'img/colorbutton.jpg')
     },
 
@@ -185,23 +185,19 @@ game.load.image('button', 'img/start.png')
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
                     counter ++;
-
-                    if(counter > 5)
-                       return;
-                                
-
+                    if(counter > 6)
+                        return;
                 }while(nextStruct == null || 
                     (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-
                 if(nextStruct['tile']['key'] == 'tile'){
                     active.push(nextStruct);
+                    active.splice(myInd,1);
+                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
+                    currStruct['tile'].loadTexture('tile'); 
+                }else{
+                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 }
-
-                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
-                currStruct['tile'].loadTexture('tile');
-                active.splice(myInd,1);
-                
             }
         }
 

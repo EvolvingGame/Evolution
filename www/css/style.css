@@ -1,15 +1,25 @@
-/* Empty. Add your own CSS if you like */
-.background{
-
-    width:100vw;
-    height:100vw;
+body{
+    margin:0px;
+    padding:0px;
+    align-content: center;
+    font-family: Rockwell;
 }
 
-.mainbody{
-    width: 60vw;
-    height:70vw;
-    margin-left:20vw;
+a{
+    font-style: bold;
+    padding: 20px;
+}
 
+a.button#game_menu{
+    height:20px;
+    padding:0 30%;
+    width:40%;
+    border-radius: 0 0 25px 25px;
+    border: 0;
+}
+
+#gameDiv{
+    margin:0 2%;
 }
 
 .mainbodyHTP{
@@ -17,12 +27,14 @@
     height:70vw;
     margin-left:10vw;
     padding-left:5vw;
- border-style: double;
+    border-style: double;
     border-color:white;
 }
-.text{
 
-color:white;
+#game-title{
+    color:white;
+    font-size: 10vw;
+    margin:20vw 0;
 }
 
 
@@ -42,15 +54,15 @@ font-size: xx-large;
     background-color: mediumblue;
     color: white;
     font-size: xx-large;
-
-
-
 }
+
 .contentbody{
-    width:40vw;
-    height:40vw;
-    padding: auto;
+    width:100%;
+    padding:0;
+    margin:0;
+    text-align: center;
 }
+
 .button {
     font-size:xx-large;
     text-decoration: none;
@@ -63,7 +75,6 @@ font-size: xx-large;
     border-left: 1px solid #CCCCCC;
     border-color: white;
     border-style: double;
-
     width:60vw;
     height:10vw;
 }
