@@ -12,6 +12,9 @@ var gameState = function(game){
 var active = new Array();
 var time = 0;
 var allStructs = new Array();
+var tileHeight;
+var tileWidth;
+var numWide = 6;
 
 gameState.prototype = {
 
@@ -23,11 +26,10 @@ gameState.prototype = {
     create: function () {
         var hexWidth= 696;
         var hexHeight = 800;
-        var numWide = 6;
 
         // Desired Tile Width
-        var tileWidth = Math.trunc(gameWidth / (numWide*3/2));
-        var tileHeight = tileWidth  / hexWidth * hexHeight;
+        tileWidth = Math.trunc(gameWidth / (numWide*3/2));
+        tileHeight = tileWidth  / hexWidth * hexHeight;
         var numHigh = Math.trunc(gameHeight / tileHeight)*2-1;        
 
         var allTiles = new Array();
@@ -65,8 +67,10 @@ gameState.prototype = {
     },
 
     update: function () {
-        if(time++%100 == 0){
-            for(i = 0; i < active.length; i++){}
+        if(time++%10 == 0){
+            for(i = 0; i < active.length; i++){
+                console.log(active[i])
+            }
         }
     },
 };
@@ -75,16 +79,38 @@ function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
       if(tile.key == 'tile'){
         tile.loadTexture('earth');
-        active.push(tile);
+        active.push(getTile(tile));
       }
       else{
-        tile.loadTexture('tile');
-        for(i = 0; i < active.length;i++){
-          if(active[i]==tile)
-            active.splice(i,1);
-        }
+        deactivateTile(tile);
       }
     }
+}
+
+function deactivateTile(tile){
+    tile.loadTexture('tile');
+    for(i = 0; i < active.length;i++){
+      if(active[i].tile.x==tile.x && active[i].tile.y == tile.y)
+        active.splice(i,1);
+        return true;
+    }
+    return false;
+}
+
+
+function getTile(tile){
+    var x = tile.x;
+    var y = tile.y;
+    var row = 0;
+    var col = 0;
+    if(y%tileHeight == 0)
+        row = y/tileHeight*2;
+    else
+        row = (y-tileHeight/2)/tileHeight*2+1;
+    row = Math.round(row);
+    col = Math.floor(x/(tileWidth*0.75)/2);
+    var index = numWide*row-Math.floor(row/2)+col;
+    return allStructs[index];
 }
 
 var game = new Phaser.Game(gameWidth,gameHeight, Phaser.AUTO, 'gameDiv');
