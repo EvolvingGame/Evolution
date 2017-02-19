@@ -17,6 +17,7 @@ var tileHeight;
 var tileWidth;
 var numWide = 4;
 
+
 gameState.prototype = {
 
     preload: function () {
@@ -37,7 +38,6 @@ gameState.prototype = {
 
         for(var j = 0; j < numHigh; j++){
             for(var i = 0; i < numWide; i++){
-                // var nextTile = {tile:null,x:null,y:null};
                 var nextTile;
                 if(j%2==0){
                     tile = game.add.sprite(1.5*i*tileWidth,(j/2)*tileHeight,'tile');
@@ -171,32 +171,34 @@ gameState.prototype = {
     },
 
     update: function () {
-
-        if(time++%50 == 0){
-            for(var myInd = 0; myInd < active.length; myInd++){
-                console.log("I is: ");
-                console.log(myInd);
+        if(time++%10 == 0){
+            if(active.length > 0){
+                var myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
                 var keys = Object.keys(currStruct);
                 var key;
                 var counter=0;
                 do{
+                    var cont = false;
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
+
                     console.log(active.length);
+
                     counter ++;
                     if (counter==6 && nextStruct != null) break;
 
                 }                
-                while(nextStruct == null || contains(nextStruct));
+                while(nextStruct == null || (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-                nextStruct['tile'].loadTexture('earth');
+                if(nextStruct['tile']['key'] == 'tile'){
+                    active.push(nextStruct);
+                }
+
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);  
                 currStruct['tile'].loadTexture('tile');
-                console.log("I is: ");
-                console.log(myInd);
-                console.log(active.splice(myInd,1));
-                active.push(nextStruct);
-                console.log(active);
+                active.splice(myInd,1);
+                
             }
         }
     }
@@ -237,7 +239,6 @@ function getTileStruct(tile){
     row = Math.round(row);
     col = Math.floor(x/(tileWidth*0.75)/2);
     var index = numWide*row-Math.floor(row/2)+col;
-    console.log(index);
     return allStructs[index];
 }
 
