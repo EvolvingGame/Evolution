@@ -36,7 +36,7 @@ game.load.image('button', 'img/start.png')
 
     create: function () {
         var hexWidth= 696;
-        var hexHeight = 1600;
+        var hexHeight = 800;
 
         // Desired Tile Width
         tileWidth = Math.trunc(gameWidth / (numWide*3/2));
@@ -173,7 +173,7 @@ game.load.image('button', 'img/start.png')
     },
 
     update: function () {
-        if(time++%50 == 0&& go==0){
+        if(time++%10 == 0&& go==0){
             if(active.length > 0){
                 var myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];

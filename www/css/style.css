@@ -25,6 +25,17 @@
 color:white;
 }
 
+
+.textmed{
+font-size: x-large;
+    color:white;
+}
+.textlarge{
+font-size: xx-large;
+
+    color:white;
+}
+
 .nav {
     width:50vw;
     height:10vw;
@@ -67,4 +78,8 @@ color:white;
     background-color: mediumblue;
     color: white;
     font-size: xx-large;
+}
+
+#gameDiv1{
+    margin-left:60vw;
 }
