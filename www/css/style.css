@@ -34,16 +34,19 @@ a.button#game_menu{
 #game-title{
     color:white;
     font-size: 10vw;
-    margin:20vw 0;
+    margin:10vw 25vw;
+    text-align: center;
 }
 
-
+.text{
+    font-size:24px;
+}
 .textmed{
-font-size: x-large;
+font-size: 32px;
     color:white;
 }
 .textlarge{
-font-size: xx-large;
+font-size: 42px;
 
     color:white;
 }
@@ -61,6 +64,8 @@ font-size: xx-large;
     padding:0;
     margin:0;
     text-align: center;
+    border-color: black;
+    border-style: double;
 }
 
 .button {
@@ -75,8 +80,9 @@ font-size: xx-large;
     border-left: 1px solid #CCCCCC;
     border-color: white;
     border-style: double;
-    width:60vw;
+    width:20vw;
     height:10vw;
+    margin-left:0vw;
 }
 
 .atag{
