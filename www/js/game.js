@@ -11,6 +11,8 @@ var gameState = function(game){
 
 var active = new Array();
 var time = 0;
+var allStructs = new Array();
+
 gameState.prototype = {
 
     preload: function () {
@@ -54,19 +56,17 @@ gameState.prototype = {
             }
         }
 
-        /////// TO DO: CREATE DATA STRUCTURES HERE //////////////
-
-
-        for(j = 0; j < numHigh-1; j++){
-            for(i = 0; i < numWide-1; i++){
-            }
+        for(i = 0; i < allTiles.length; i++){
+            var tileStuct = {tile:allTiles[i],
+                upLeft:allTiles[i-numWide],up:allTiles[i-(2*numWide-1)],upRights:allTiles[i-(numWide-1)],
+                downLeft:allTiles[i+(numWide-1)], down:allTiles[i+(numWide*2-1)], downRigth:allTiles[i+numWide]};
+            allStructs.push(tileStuct);
         }
     },
 
     update: function () {
         if(time++%100 == 0){
             for(i = 0; i < active.length; i++){}
-
         }
     },
 };
