@@ -57,10 +57,45 @@ gameState.prototype = {
         }
 
         for(i = 0; i < allTiles.length; i++){
-            var tileStuct = {tile:allTiles[i],
-                upLeft:allTiles[i-numWide],up:allTiles[i-(2*numWide-1)],upRights:allTiles[i-(numWide-1)],
-                downLeft:allTiles[i+(numWide-1)], down:allTiles[i+(numWide*2-1)], downRigth:allTiles[i+numWide]};
-            allStructs.push(tileStuct);
+            var numRows = Math.ceil(i/numWide);
+            var numOddRows= Math.floor(numRows/2);
+
+           //set neighbor values
+            var upLeft = allTiles[i-numWide];
+            var up = allTiles[i-(2*numWide-1)];
+            var upRight = allTiles[i-(numWide-1)];
+            var dnLeft = allTiles[i+(numWide-1)];
+            var dn = allTiles[i+(numWide*2-1)];
+            var dnRight = allTiles[i+numWide];
+
+            //correct bad neighbor values
+            //if tile is on left side left neighbors don't exist
+            if (tile:allTiles[i]%(2*numWide-1)==0){
+                upLeft=null;
+                dnLeft=null;
+            }
+            //if tile is on right side right neighbors don't exist
+            else if(i==numWide*numRows-numOddRows-1){
+                upRight=null;
+                dnRight=null;
+            }
+
+            //a tile can be on both right or left side and also on the top or bottom
+
+            //if on top
+            if(i<num-1){
+                upLeft=null;
+                upRight=null;
+            }
+            //else if on bottom
+            else if(i>allTiles.length-n){
+                dnLeft=null;
+                dnRight=null;
+            }
+            var tileStruct = {tile:allTiles[i],
+                upLeft:upLeft,up:up,upRight:upRight,
+                downLeft:dnLeft, down:dn, downRight:dnRight};
+            allStructs.push(tileStruct);
         }
     },
 
