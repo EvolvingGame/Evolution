@@ -184,7 +184,7 @@ game.load.image('button', 'img/start.png')
 
     update: function () {
 
-        if(time++%50 == 0){
+        if(time++%50 == 0&& go==0){
             for(var myInd = 0; myInd < active.length; myInd++){
                 console.log("I is: ");
                 console.log(myInd);
@@ -198,7 +198,7 @@ game.load.image('button', 'img/start.png')
                 }                
                 while(nextStruct == null || contains(nextStruct));
 
-                nextStruct['tile'].loadTexture('earth');
+                nextStruct['tile'].loadTexture("earth");
                 currStruct['tile'].loadTexture('tile');
                 console.log("I is: ");
                 console.log(myInd);
@@ -317,21 +317,19 @@ function actionOnClick(){
     console.log(timer/60);
 
     if(go ==0){
-
-
         go = 1;
     }
     else{
-
         go = 0;
     }
 }
 
 
 function actionOnClick2(){
+
     console.log("button2 works");
 if(currentColor=="earth"){
-    currentColor="blue";
+    currentColor="prey";
     text2.setText(currentColor);
 }
 else{
