@@ -1,5 +1,5 @@
-var gameHeight = 640;
-var gameWidth  = 480;
+var gameHeight = 800;
+var gameWidth  = 800;
 
 var states = {
     game: "game",
@@ -15,7 +15,12 @@ var time = 0;
 var allStructs = new Array();
 var tileHeight;
 var tileWidth;
-var numWide = 10;
+
+var numWide = 5;
+var go = 0;
+var timer = 0;
+var text;
+var currentColor = "earth";
 
 
 gameState.prototype = {
@@ -23,6 +28,10 @@ gameState.prototype = {
     preload: function () {
       game.load.image('tile','img/hexagon.svg');
       game.load.image('earth','img/hexagon_earth.svg');
+      game.load.image('predator','img/yellow.svg');
+        game.load.image('prey','img/blue.svg');
+game.load.image('button', 'img/start.png')
+        game.load.image('buttoncolor', 'img/colorbutton.jpg')
     },
 
     create: function () {
@@ -153,10 +162,18 @@ gameState.prototype = {
                              'downLeft':dnLeft, 'down':dn, 'downRight':dnRight};
             }
         }
+
+        button = game.add.button(game.world.centerX - gameWidth/2+25, gameHeight-50, 'button', actionOnClick, this, 0, 0, 0);
+        button1 = game.add.button(game.world.centerX - gameWidth/2+500, gameHeight-50, 'buttoncolor', actionOnClick2, this, 0, 0, 0);
+        //button.style.background("#333333");
+        var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: 100, align: "center", backgroundColor: "#ffff00" };
+        text = game.add.text(100,gameHeight-50,timer ,style);
+        text2 = game.add.text(300, gameHeight-50, currentColor, style);
+
     },
 
     update: function () {
-        if(time++%5 == 0){
+        if(time++%10 == 0&& go==0){
             if(active.length > 0){
                 var myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
@@ -173,29 +190,108 @@ gameState.prototype = {
                 }while(nextStruct == null || 
                     (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
+
                 if(nextStruct['tile']['key'] == 'tile'){
                     active.push(nextStruct);
                 }
 
-                nextStruct['tile'].loadTexture(currStruct['tile']['key']);  
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 currStruct['tile'].loadTexture('tile');
                 active.splice(myInd,1);
             }
         }
-    }
+
+text.setText(Math.round(timer/60*100)/100);
+        // if(go==0) {
+        //     for (j = 0; j < active.length; j++) {
+        //
+        //         if (active.get(i).LoadTexture() == "prey") {
+        //             var numchildren = active.get(i).getNumChildren();
+        //             if (OnResource()) {
+        //                 //moves
+        //             }
+        //
+        //             else if (numchildren == 0) {
+        //                 //nothing
+        //             }
+        //             else if (numchildren == 1) {
+        //                 //reproduce and doesnt move
+        //             }
+        //             else if (numchildren == 2 || numchildren == 3 || numchildren == 4) {
+        //                 //moves randomly
+        //             }
+        //             else {
+        //                 //dies from overpolulation
+        //             }
+        //         }
+        //         else if (active.get(i).LoadTexture() == "predator") {
+        //             var numchildren = active.get(i).getNumChildren();
+        //             if (PreyIsNeighbor()) {
+        //                 //moves and kills prey
+        //             }
+        //
+        //             else if (numchildren == 0) {
+        //                 //moves
+        //             }
+        //             else if (numchildren == 1) {
+        //                 //reproduce and doesnt move
+        //             }
+        //             else if (numchildren == 2 || numchildren == 3) {
+        //                 //moves randomly
+        //             }
+        //             else {
+        //                 //dies from overpolulation
+        //             }
+        //         }
+        //         else {
+        //
+        //         }
+        //     }
+        // }
+
+        if(go==0) {
+            timer++;
+        }
+
+
+
+    },
 };
+
+// function clickHandler(tile, pointer) {
+//     if (pointer.leftButton.isDown) {
+//         if(tile.key == 'tile'){
+//         tile.loadTexture('earth');
+//         active.push(getTile(tile));
+//       }
+//       else if(tile.key == "earth"){
+//             tile.loadTexture('prey');
+//             active.push(getTile(tile));
+//         }
+//         else if(tile.key == "prey"){
+//             tile.loadTexture('predator');
+//             active.push(getTile(tile));
+//         }
+//       else{
+//         deactivateTile(tile);
+//       }
+//     }
+//
+//
+// };
 
 function contains(tileStruct){
     for(var i = 0; i < active.length; i++)
         if(tileStruct['tile']['x'] == active[i]['tile']['x']&&tileStruct['tile']['y'] == active[i]['tile']['y'])
             return true;
     return false;
+
 }
 
 function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
         if(tile.key == 'tile'){
-            tile.loadTexture('earth');
+            tile.loadTexture(currentColor);
             active.push(getTileStruct(tile));
         }
         else{
@@ -208,7 +304,37 @@ function clickHandler(tile, pointer) {
     }
 }
 
+
+function actionOnClick(){
+    console.log("button works");
+    console.log(timer/60);
+
+    if(go ==0){
+        go = 1;
+    }
+    else{
+        go = 0;
+    }
+}
+
+
+function actionOnClick2(){
+
+    console.log("button2 works");
+if(currentColor=="earth"){
+    currentColor="prey";
+    text2.setText(currentColor);
+}
+else{
+    currentColor = "earth";
+    text2.setText(currentColor);
+}
+}
+
+function getTile(tile) {
+}
 function getTileStruct(tile){
+
     var x = tile.x;
     var y = tile.y;
     var row = 0;
@@ -221,6 +347,7 @@ function getTileStruct(tile){
     col = Math.floor(x/(tileWidth*0.75)/2);
     var index = numWide*row-Math.floor(row/2)+col;
     return allStructs[index];
+
 }
 
 var game = new Phaser.Game(gameWidth,gameHeight, Phaser.AUTO, 'gameDiv');
