@@ -9,7 +9,6 @@ var gameState = function(game){
 
 };
 
-var hexagons = new Array();
 var active = new Array();
 var time = 0;
 gameState.prototype = {
@@ -23,10 +22,14 @@ gameState.prototype = {
         var hexWidth= 696;
         var hexHeight = 800;
         var numWide = 6;
+
         // Desired Tile Width
         var tileWidth = Math.trunc(gameWidth / (numWide*3/2));
         var tileHeight = tileWidth  / hexWidth * hexHeight;
         var numHigh = Math.trunc(gameHeight / tileHeight)*2-1;        
+
+        var allTiles = new Array();
+
         for(j = 0; j < numHigh; j++){
             for(i = 0; i < numWide; i++){
                 var nextTile = {tile:null,x:null,y:null};
@@ -47,9 +50,12 @@ gameState.prototype = {
                     tile.events.onInputDown.add(clickHandler, this);
                     nextTile = {tile:tile, x:i, y:j};
                 }
-                hexagons.push(nextTile);
+                allTiles.push(nextTile);
             }
         }
+
+        /////// TO DO: CREATE DATA STRUCTURES HERE //////////////
+
 
         for(j = 0; j < numHigh-1; j++){
             for(i = 0; i < numWide-1; i++){
