@@ -9,6 +9,7 @@ var gameState = function(game){
 
 };
 
+
 var active = new Array();
 var time = 0;
 var allStructs = new Array();
@@ -18,6 +19,7 @@ var numWide = 5;
 var go = 0;
 var timer = 0;
 var text;
+var currentColor = "earth";
 
 gameState.prototype = {
 
@@ -27,6 +29,7 @@ gameState.prototype = {
       game.load.image('predator','img/yellow.svg');
         game.load.image('prey','img/blue.svg');
 game.load.image('button', 'img/start.png')
+        game.load.image('buttoncolor', 'img/colorbutton.jpg')
     },
 
     create: function () {
@@ -40,16 +43,19 @@ game.load.image('button', 'img/start.png')
 
         var allTiles = new Array();
 
-        for(j = 0; j < numHigh; j++){
-            for(i = 0; i < numWide; i++){
-                var nextTile = {tile:null,x:null,y:null};
+        for(var j = 0; j < numHigh; j++){
+            for(var i = 0; i < numWide; i++){
+                // var nextTile = {tile:null,x:null,y:null};
+                var nextTile;
                 if(j%2==0){
                     tile = game.add.sprite(1.5*i*tileWidth,(j/2)*tileHeight,'tile');
                     tile.height = tileHeight;
                     tile.width = tileWidth;
                     tile.inputEnabled = true;
                     tile.events.onInputDown.add(clickHandler, this);
-                    nextTile = {tile:tile, x:i, y:j};
+                    nextTile = {'tile':tile,
+                            'upLeft':null,'up':null,'upRight':null,
+                            'downLeft':null, 'down':null, 'downRight':null};
                 }else{
                     if(i == numWide - 1)
                         continue;
@@ -58,13 +64,17 @@ game.load.image('button', 'img/start.png')
                     tile.width = tileWidth;
                     tile.inputEnabled = true;
                     tile.events.onInputDown.add(clickHandler, this);
-                    nextTile = {tile:tile, x:i, y:j};
+                    nextTile = {'tile':tile,
+                            'upLeft':null,'up':null,'upRight':null,
+                            'downLeft':null, 'down':null, 'downRight':null,'poop' :true};
                 }
-                allTiles.push(nextTile);
+                allStructs.push(nextTile);
             }
         }
 
-        for(i = 0; i < allTiles.length; i++){
+        for(var i = 0; i < allStructs.length; i++){
+
+            var tile = allStructs[i]['tile'];
 
             //get useful variables
             var numRows = Math.ceil(i/numWide);
@@ -78,29 +88,25 @@ game.load.image('button', 'img/start.png')
             var dn = i+(numWide*2-1);
             var dnRight = i+numWide;
 
-            //initialize the tileStruct
-            var tileStruct = {tile:allTiles[i],
-                            upLeft:null,up:null,upRight:null,
-                            downLeft:null, down:null, downRight:null};
-
-
             var isLefttile=false;
             var isRighttile=false;
             var isToptile=false;
             var isBottile=false;
+            var isTopOdd=false;
+            var isBotOdd=false;
+
 
             //if tile is on left side left neighbors don't exist
             if (i%(2*numWide-1)==0){
                 isLefttile=true;
-                tileStruct[upLeft]=null;
-                tileStruct[dnLeft]=null;
-                tileStruct
+                console.log("LEFT SIDE");
+                console.log(i);
             }
             //if tile is on right side right neighbors don't exist
             else if(i==numWide*numRows-numOddRows-1){
                 isRighttile=true;
-                tileStruct[upRight]=null;
-                tileStruct[dnRight]=null;
+                console.log("RIGTH SIDE");
+                console.log(i);
             }
 
             //a tile can be on both right or left side and also on the top or bottom
@@ -108,61 +114,100 @@ game.load.image('button', 'img/start.png')
             //if on top
             if(i<numWide-1){
                 isToptile=true;
-                tileStruct[upLeft]=null;
-                tileStruct[upRight]=null;
+                console.log("TOP SIDE");
+                console.log(i);
             }
             //else if on bottom
-            else if(i>allTiles.length-numWide){
+            else if(i>allStructs.length-numWide){
+                console.log("BOTTOM SIDE");
+                console.log(i);
                 isBottile=true;
-                tileStruct[dnLeft]=null;
-                tileStruct[dnRight]=null;
             }
+
+            if(i>numWide&&i<2*(numWide-1)){
+                isTopOdd=true;
+            }
+            else if(i < (allStructs.length-numWide) && i > (allStructs.length-2*(numWide-1))){
+                isBotOdd=true;
+            }
+
             if(isToptile)
                 if(isRighttile)
-                    tileStruct = {tile:allTiles[i], upLeft:null,up:null,upRight:null,
-                                 downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:null};
+                    allStructs[i] = {'tile':tile,'upLeft':null,'up':null,'upRight':null,
+                                 'downLeft':dnLeft, 'down':dn, 'downRight':null};
                 else if(isLefttile)
-                    tileStruct = {tile:allTiles[i], upLeft:null,up:null,upRight:null,
-                                 downLeft:null, down:allTiles[dn], downRight:allTiles[dnRight]};
+                    allStructs[i] = {'tile':tile,'upLeft':null,'up':null,'upRight':null,
+                                 'downLeft':null, 'down':dn, 'downRight':dnRight};
                 else
-                    tileStruct = {tile:allTiles[i], upLeft:null,up:null,upRight:null,
-                                 downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:allTiles[dnRight]};
+                    allStructs[i] = {'tile':tile,'upLeft':null,'up':null,'upRight':null,
+                                 'downLeft':dnLeft, 'down':dn, 'downRight':dnRight};
             else if(isBottile)
                 if(isRighttile)
-                    tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:null,
-                                 downLeft:null, down:null, downRight:null};
+                    allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':null,
+                                 'downLeft':null, 'down':null, 'downRight':null};
                 else if(isLefttile)
-                    tileStruct = {tile:allTiles[i], upLeft:null,up:allTiles[up],upRight:allTiles[upRight],
-                                 downLeft:null, down:null, downRight:null};
+                    allStructs[i] = {'tile':tile,'upLeft':null,'up':up,'upRight':upRight,
+                                 'downLeft':null, 'down':null, 'downRight':null};
                 else
-                    tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:allTiles[upRight],
-                                 downLeft:null, down:null, downRight:null};
+                    allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':upRight,
+                                 'downLeft':null, 'down':null, 'downRight':null};
             else if(isLefttile)
-                    tileStruct = {tile:allTiles[i], upLeft:null,up:allTiles[up],upRight:allTiles[upRight],
-                                 downLeft:null, down:allTiles[dn], downRight:allTiles[dnRight]};
+                    allStructs[i] = {'tile':tile,'upLeft':null,'up':up,'upRight':upRight,
+                                 'downLeft':null, 'down':dn, 'downRight':dnRight};
             else if(isRighttile)
-                    tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:null,
-                                 downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:null};
-            else
-                tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:allTiles[upRight],
-                             downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:allTiles[dnRight]};
+                    allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':null,
+                                 'downLeft':dnLeft, 'down':dn, 'downRight':null};
+            else if(isTopOdd)
+                allStructs[i] = {'tile':tile, 'upLeft':upLeft, 'up':null, upRight:upRight,
+                              'downLeft':dnLeft, 'down':dn, 'downRight': dnRight};
+            else if(isBotOdd)
+                allStructs[i] = {'tile':tile, 'upLeft':upLeft, 'up':up, upRight:upRight,
+                                              'downLeft':dnLeft, 'down':null, 'downRight': dnRight};
 
-            allStructs.push(tileStruct);
+            else{
+                allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':upRight,
+                             'downLeft':dnLeft, 'down':dn, 'downRight':dnRight};
+            }
+
+            if(allStructs['poop'])
+                console.log("ERROR");
         }
 
         button = game.add.button(game.world.centerX - gameWidth/2+25, gameHeight-50, 'button', actionOnClick, this, 0, 0, 0);
+        button1 = game.add.button(game.world.centerX - gameWidth/2+500, gameHeight-50, 'buttoncolor', actionOnClick2, this, 0, 0, 0);
         //button.style.background("#333333");
         var style = { font: "32px Arial", fill: "#ff0044", wordWrap: true, wordWrapWidth: 100, align: "center", backgroundColor: "#ffff00" };
         text = game.add.text(100,gameHeight-50,timer ,style);
+        text2 = game.add.text(300, gameHeight-50, currentColor, style);
 
     },
 
     update: function () {
-        if(time++%100 == 0){
-            for(i = 0; i < active.length; i++){
-                console.log(active[i])
+
+        if(time++%50 == 0){
+            for(var myInd = 0; myInd < active.length; myInd++){
+                console.log("I is: ");
+                console.log(myInd);
+                currStruct = active[myInd];
+                var keys = Object.keys(currStruct);
+                var key;
+                do{
+                    key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
+                    nextStruct = allStructs[currStruct[key]];
+                    console.log(active.length);
+                }                
+                while(nextStruct == null || contains(nextStruct));
+
+                nextStruct['tile'].loadTexture('earth');
+                currStruct['tile'].loadTexture('tile');
+                console.log("I is: ");
+                console.log(myInd);
+                console.log(active.splice(myInd,1));
+                active.push(nextStruct);
+                console.log(active);
             }
         }
+
 text.setText(Math.round(timer/60*100)/100);
         // if(go==0) {
         //     for (j = 0; j < active.length; j++) {
@@ -220,35 +265,52 @@ text.setText(Math.round(timer/60*100)/100);
     },
 };
 
+// function clickHandler(tile, pointer) {
+//     if (pointer.leftButton.isDown) {
+//         if(tile.key == 'tile'){
+//         tile.loadTexture('earth');
+//         active.push(getTile(tile));
+//       }
+//       else if(tile.key == "earth"){
+//             tile.loadTexture('prey');
+//             active.push(getTile(tile));
+//         }
+//         else if(tile.key == "prey"){
+//             tile.loadTexture('predator');
+//             active.push(getTile(tile));
+//         }
+//       else{
+//         deactivateTile(tile);
+//       }
+//     }
+//
+//
+// };
+
+function contains(tileStruct){
+    for(var i = 0; i < active.length; i++)
+        if(tileStruct['tile']['x'] == active[i]['tile']['x']&&tileStruct['tile']['y'] == active[i]['tile']['y'])
+            return true;
+    return false;
+
+}
+
 function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
         if(tile.key == 'tile'){
-        tile.loadTexture('earth');
-        active.push(getTile(tile));
-      }
-      else if(tile.key == "earth"){
-            tile.loadTexture('prey');
-            active.push(getTile(tile));
+            tile.loadTexture(currentColor);
+            active.push(getTileStruct(tile));
         }
-        else if(tile.key == "prey"){
-            tile.loadTexture('predator');
-            active.push(getTile(tile));
+        else{
+            tile.loadTexture('tile');
+            for(var i = 0; i < active.length;i++){
+                if(active[i].tile.x==tile.x && active[i].tile.y == tile.y)
+                    active.splice(i,1);
+            }
         }
-      else{
-        deactivateTile(tile);
-      }
     }
 }
 
-function deactivateTile(tile){
-    tile.loadTexture('tile');
-    for(i = 0; i < active.length;i++){
-      if(active[i].tile.x==tile.x && active[i].tile.y == tile.y)
-        active.splice(i,1);
-        return true;
-    }
-    return false;
-}
 
 function actionOnClick(){
     console.log("button works");
@@ -266,7 +328,22 @@ function actionOnClick(){
 }
 
 
-function getTile(tile){
+function actionOnClick2(){
+    console.log("button2 works");
+if(currentColor=="earth"){
+    currentColor="blue";
+    text2.setText(currentColor);
+}
+else{
+    currentColor = "earth";
+    text2.setText(currentColor);
+}
+}
+
+function getTile(tile) {
+}
+function getTileStruct(tile){
+
     var x = tile.x;
     var y = tile.y;
     var row = 0;
@@ -278,6 +355,7 @@ function getTile(tile){
     row = Math.round(row);
     col = Math.floor(x/(tileWidth*0.75)/2);
     var index = numWide*row-Math.floor(row/2)+col;
+    console.log(index);
     return allStructs[index];
 
 }
