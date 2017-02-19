@@ -146,7 +146,7 @@ gameState.prototype = {
     },
 
     update: function () {
-        if(time++%10 == 0){
+        if(time++%100 == 0){
             for(i = 0; i < active.length; i++){
                 console.log(active[i])
             }
