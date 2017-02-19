@@ -16,7 +16,7 @@ var allStructs = new Array();
 var tileHeight;
 var tileWidth;
 
-var numWide = 6;
+var numWide = 15;
 var go = 1;
 var timer = 0;
 var text;
@@ -203,7 +203,7 @@ gameState.prototype = {
 
 
                 console.log(currStruct['time']);
-                if(time-currStruct['time'] > 200){
+                if(time-currStruct['time'] > 20000){
                     currStruct['tile'].loadTexture('tile');
                     currStruct['time']=0;
                     active.splice(myInd,1);
@@ -245,10 +245,16 @@ gameState.prototype = {
                     continue;
                 nextStruct = allStructs[currStruct[key]];
 
+                //if a prey is planning on going to a predator next find a new plan
                 if(currStruct!=null && currStruct['tile']['key']=='prey'&&
                     nextStruct!=null && nextStruct['tile']['key']=='predator')
                     continue;
 
+                //if the currStruct is earth or resource, do not move
+                if(currStruct != null && (currStruct['tile']['key']=='earth'
+                    || currStruct['tile']['key']=='resource')){
+                        return;
+                    }
             }while(nextStruct == null || (contains(nextStruct) && 
                 nextStruct['tile']['key'] == currStruct['tile']['key']));
 
