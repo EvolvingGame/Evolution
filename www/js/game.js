@@ -236,8 +236,6 @@ gameState.prototype = {
             }while(nextStruct == null || (contains(nextStruct) && 
                 nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-
-
             if(nextStruct['tile']['key'] == 'tile'){
                 active.push(nextStruct);
                 nextStruct['time']=time;
