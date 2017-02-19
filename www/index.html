@@ -1,33 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!--<meta charset="utf-8">-->
-    <!--<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">-->
-    <!--<title></title>-->
-
-    <!--<link rel="manifest" href="manifest.json">-->
-    <!--<link href="lib/ionic/css/ionic.css" rel="stylesheet">-->
-    <link href="css/style.css" rel="stylesheet">
-
-    <!--<script src="lib/ionic/js/ionic.bundle.js"></script>-->
-
-    <!-- cordova script (this will be a 404 during development) -->
-    <!--<script src="cordova.js"></script>-->
-
-    <!-- your app's js -->
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>The Actual Game</title>
-
+    <link href="css/style.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>Game Window</title>
     <script src="js/phaser.js"></script>
     <script src="js/game.js"></script>
   </head>
-  <body>
-  <div style="display:inline-block;">
+  <body style="background-color: black">
+  <div style="text-align: center;">
     <div id = "gameDiv" style="float:left"></div>
-    <div style="height:100%;width:100%;">
-      <a class = "button" style="width:100%;text-align:center;" href="MainScreen.html">Main Menu</a>
-    </div>  
+    <a id="game_menu" class = "button" href="MainScreen.html">Main Menu</a>
   </div>
 
   </body>

@@ -1,5 +1,5 @@
-var gameHeight = 600;
-var gameWidth  = 600;
+var gameHeight = document.documentElement.clientHeight-40;
+var gameWidth  = document.documentElement.clientWidth-20;
 
 var states = {
     game: "game",
