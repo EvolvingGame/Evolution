@@ -186,6 +186,7 @@ gameState.prototype = {
                 var key;
                 var counter=0;
 
+                //predator hunting
                 if(currStruct['tile']['key']=='predator'){
                     for (var neighbor = 1; neighbor<keys.length; neighbor++){
                         key = keys[neighbor];
@@ -200,17 +201,19 @@ gameState.prototype = {
                     }
                 }
 
+
                 do{
 
                     //move randomly if other rules don't apply
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
-                    nextStruct = allStructs[currStruct[key]];
+                    if (currStruct[key]!= null)
+                         nextStruct = allStructs[currStruct[key]];
                     counter ++;
 
-
-                    if(counter > 5)
-                       return;
-
+                    if (currStruct != null && nextStruct != null){
+                        if(counter > 5 ||currStruct['tile']['key']=='prey' && nextStruct['tile']['key']=='predator' )
+                        return;
+                    }
 
 
                 }while(nextStruct == null ||
