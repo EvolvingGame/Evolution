@@ -1,5 +1,5 @@
-var gameHeight = 800;
-var gameWidth  = 800;
+var gameHeight = 600;
+var gameWidth  = 600;
 
 var states = {
     game: "game",
@@ -16,7 +16,7 @@ var allStructs = new Array();
 var tileHeight;
 var tileWidth;
 
-var numWide = 5;
+var numWide = 6;
 var go = 0;
 var timer = 0;
 var text;
@@ -26,17 +26,17 @@ var currentColor = "earth";
 gameState.prototype = {
 
     preload: function () {
-      game.load.image('tile','img/hexagon.svg');
-      game.load.image('earth','img/hexagon_earth.svg');
-      game.load.image('predator','img/yellow.svg');
+        game.load.image('tile','img/hexagon.svg');
+        game.load.image('earth','img/hexagon_earth.svg');
+        game.load.image('predator','img/yellow.svg');
         game.load.image('prey','img/blue.svg');
-game.load.image('button', 'img/start.png')
+        game.load.image('button', 'img/start.png')
         game.load.image('buttoncolor', 'img/colorbutton.jpg')
     },
 
     create: function () {
         var hexWidth= 696;
-        var hexHeight = 1600;
+        var hexHeight = 800;
 
         // Desired Tile Width
         tileWidth = Math.trunc(gameWidth / (numWide*3/2));
@@ -190,14 +190,14 @@ game.load.image('button', 'img/start.png')
                 }while(nextStruct == null || 
                     (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-
                 if(nextStruct['tile']['key'] == 'tile'){
                     active.push(nextStruct);
+                    active.splice(myInd,1);
+                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
+                    currStruct['tile'].loadTexture('tile'); 
+                }else{
+                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 }
-
-                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
-                currStruct['tile'].loadTexture('tile');
-                active.splice(myInd,1);
             }
         }
 
