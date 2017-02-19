@@ -16,7 +16,7 @@ var allStructs = new Array();
 var tileHeight;
 var tileWidth;
 
-var numWide = 5;
+var numWide = 6;
 var go = 0;
 var timer = 0;
 var text;
@@ -26,17 +26,17 @@ var currentColor = "earth";
 gameState.prototype = {
 
     preload: function () {
-      game.load.image('tile','img/hexagon.svg');
-      game.load.image('earth','img/hexagon_earth.svg');
-      game.load.image('predator','img/yellow.svg');
+        game.load.image('tile','img/hexagon.svg');
+        game.load.image('earth','img/hexagon_earth.svg');
+        game.load.image('predator','img/yellow.svg');
         game.load.image('prey','img/blue.svg');
-game.load.image('button', 'img/start.png')
+        game.load.image('button', 'img/start.png')
         game.load.image('buttoncolor', 'img/colorbutton.jpg')
     },
 
     create: function () {
         var hexWidth= 696;
-        var hexHeight = 1600;
+        var hexHeight = 800;
 
         // Desired Tile Width
         tileWidth = Math.trunc(gameWidth / (numWide*3/2));
@@ -174,23 +174,44 @@ game.load.image('button', 'img/start.png')
 
     update: function () {
         if(time++%50 == 0&& go==0){
+
+            var myInd = Math.floor(Math.random() * active.length);
+            currStruct = active[myInd];
+            //if prey and predator are adjacent call kill()
+
             if(active.length > 0){
-                var myInd = Math.floor(Math.random() * active.length);
-                currStruct = active[myInd];
+
                 var keys = Object.keys(currStruct);
                 var key;
                 var counter=0;
                 do{
                     var cont = false;
+                    //if currStruct is a predator, look for adjacent prey.
+
+                    if(currStruct['tile']['key']=='predator'){
+                        for (var neighbor = 1; neighbor<keys.length; neighbor++){
+                            key = keys[neighbor];
+                            console.log(key);
+                            var neighborStruct = null;
+                            if (currStruct[key]!= null)
+                                neighborStruct = allStructs[currStruct[key]];
+                            if (neighborStruct !=null && neighborStruct['tile']['key'] == 'prey'){
+                                kill(neighborStruct,currStruct);
+                                neighbor = keys.length;
+                            }
+                        }
+                    }
+
+                    //move randomly if other rules don't apply
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
                     counter ++;
 
                     if(counter > 5)
                        return;
-                                
 
-                }while(nextStruct == null || 
+                    }
+                while(nextStruct == null ||
                     (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
 
@@ -201,11 +222,18 @@ game.load.image('button', 'img/start.png')
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 currStruct['tile'].loadTexture('tile');
                 active.splice(myInd,1);
-                
-            }
+
+                }
+
+
+            //what makes them move
+            moveRandom();
+
         }
 
 text.setText(Math.round(timer/60*100)/100);
+
+
         // if(go==0) {
         //     for (j = 0; j < active.length; j++) {
         //
@@ -292,6 +320,24 @@ function contains(tileStruct){
 
 }
 
+function kill(preyStruct, predatorStruct){
+    preyStruct.tile.loadTexture('predator');
+    predatorStruct.tile.loadTexture('tile');
+
+    for (var index; index < active.length; index++){
+        if( predatorStruct['tile']['x'] == active[index]['tile']['x'] &&
+        predatorStruct['tile']['y'] == active[index]['tile']['y']){
+            active.splice(index,1);
+            break;
+        }
+    }
+}
+
+function moveRandom(currStruct){
+
+
+}
+
 function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
         if(tile.key == 'tile'){
@@ -327,6 +373,10 @@ function actionOnClick2(){
     console.log("button2 works");
 if(currentColor=="earth"){
     currentColor="prey";
+    text2.setText(currentColor);
+}
+else if(currentColor=='prey'){
+    currentColor='predator';
     text2.setText(currentColor);
 }
 else{
