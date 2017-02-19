@@ -15,7 +15,7 @@ var time = 0;
 var allStructs = new Array();
 var tileHeight;
 var tileWidth;
-var numWide = 4;
+var numWide = 10;
 
 
 gameState.prototype = {
@@ -156,7 +156,7 @@ gameState.prototype = {
     },
 
     update: function () {
-        if(time++%10 == 0){
+        if(time++%5 == 0){
             if(active.length > 0){
                 var myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
@@ -168,7 +168,7 @@ gameState.prototype = {
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
                     counter ++;
-                    if(counter > 5)
+                    if(counter > 6)
                         return;
                 }while(nextStruct == null || 
                     (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
@@ -180,7 +180,6 @@ gameState.prototype = {
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);  
                 currStruct['tile'].loadTexture('tile');
                 active.splice(myInd,1);
-                
             }
         }
     }
