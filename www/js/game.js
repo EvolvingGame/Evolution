@@ -15,7 +15,7 @@ var time = 0;
 var allStructs = new Array();
 var tileHeight;
 var tileWidth;
-var numWide = 6;
+var numWide = 8;
 
 gameState.prototype = {
 
@@ -95,7 +95,7 @@ gameState.prototype = {
                 console.log(i);
             }
             //if tile is on right side right neighbors don't exist
-            else if(i==numWide*numRows-numOddRows-1){
+            else if(i==numWide*numRows-numOddRows-1 && numRows%2==1){
                 isRighttile=true;
                 console.log("RIGTH SIDE");
                 console.log(i);
@@ -104,23 +104,27 @@ gameState.prototype = {
             //a tile can be on both right or left side and also on the top or bottom
 
             //if on top
-            if(i<numWide-1){
+            if(i<numWide){
                 isToptile=true;
                 console.log("TOP SIDE");
                 console.log(i);
             }
             //else if on bottom
-            else if(i>allStructs.length-numWide){
+            else if(i>allStructs.length-numWide-1){
                 console.log("BOTTOM SIDE");
                 console.log(i);
                 isBottile=true;
             }
 
-            if(i>numWide&&i<2*(numWide-1)){
+            if(i >= numWide && i <= 2*(numWide-1)){
                 isTopOdd=true;
+                console.log("TOP ODD");
+                console.log(i);
             }
-            else if(i < (allStructs.length-numWide) && i > (allStructs.length-2*(numWide-1))){
+            else if(i <= (allStructs.length-numWide-1) && i > (allStructs.length-2*(numWide))){
                 isBotOdd=true;
+                console.log("BOT ODD");
+                console.log(i);
             }
 
             if(isToptile)
@@ -175,10 +179,12 @@ gameState.prototype = {
                 currStruct = active[myInd];
                 var keys = Object.keys(currStruct);
                 var key;
+                var counter=0;
                 do{
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
                     console.log(active.length);
+                    if (counter==6) break;
                 }                
                 while(nextStruct == null || contains(nextStruct));
 
