@@ -53,7 +53,7 @@ gameState.prototype = {
     },
 
     update: function () {
-      
+
 
 
     },
