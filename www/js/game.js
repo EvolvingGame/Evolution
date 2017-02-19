@@ -16,12 +16,14 @@ var allStructs = new Array();
 var tileHeight;
 var tileWidth;
 
-var numWide = 6;
+var numWide = 8;
 var go = 1;
 var timer = 0;
 var text;
 var currentColor = "earth";
-var numResources = 5;
+var numResources = 15;
+var gameOver = false;
+var preycounter = 0;
 
 
 gameState.prototype = {
@@ -167,8 +169,15 @@ gameState.prototype = {
 
         for(k = 0;k<numResources;k++){
             r = allStructs.length;
-            allStructs[Math.floor(Math.random() * r)]["tile"].loadTexture("resource");
-            active.push(allStructs[k]);
+            z = Math.floor(Math.random()*r);
+            allStructs[z]["tile"].loadTexture("resource");
+            active.push(allStructs[z]);
+            if(k = numResources-1){
+                y = Math.floor(Math.random() * r);
+                allStructs[y]["tile"].loadTexture("prey");
+
+                active.push(allStructs[y]);
+            }
         }
 
 
@@ -182,7 +191,16 @@ gameState.prototype = {
     },
 
     update: function () {
-        if(time++%20 == 0 && go==0 && active.length > 0){
+       gameOver = true;
+        for(b = 0;b<active.length;b++){
+            if(active[b]["tile"]["key"] == "prey"){
+                console.log("HERE");
+                gameOver = false;
+            }
+        }
+
+
+        if(time++%5 == 0 && go==0 && active.length > 0 &&!gameOver){
             var myInd;
             var currStruct;
             var key;
@@ -197,13 +215,13 @@ gameState.prototype = {
                 currStruct = active[myInd];
 
                 if(currStruct["tile"]["key"]=="resource"){
-                    return;
+                    continue;
                 }
                 var keys = Object.keys(currStruct);
 
 
                 console.log(currStruct['time']);
-                if(time-currStruct['time'] > 200){
+                if(time-currStruct['time'] > 20000){
                     currStruct['tile'].loadTexture('tile');
                     currStruct['time']=0;
                     active.splice(myInd,1);
@@ -315,7 +333,7 @@ gameState.prototype = {
         //     }
         // }
 
-        if(go==0) {
+        if(go==0&&!gameOver) {
             timer++;
         }
     },

@@ -16,7 +16,7 @@ gameState.prototype={
         game1.load.image('tile','img/hexagon.svg');
     },
     create: function(){
-        sprite = game1.add.sprite(600, 500, 'tile');
+        sprite = game1.add.sprite(1000, 1000, 'tile');
         sprite.anchor.setTo(0.5, 0.5);
     },
     update: function(){
