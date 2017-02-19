@@ -17,10 +17,11 @@ var tileHeight;
 var tileWidth;
 
 var numWide = 6;
-var go = 0;
+var go = 1;
 var timer = 0;
 var text;
 var currentColor = "earth";
+var numResources = 5;
 
 
 gameState.prototype = {
@@ -32,6 +33,7 @@ gameState.prototype = {
         game.load.image('prey','img/blue.svg');
         game.load.image('button', 'img/start.png')
         game.load.image('buttoncolor', 'img/colorbutton.jpg')
+        game.load.image('resource', 'img/hexagon_red.svg')
     },
 
     create: function () {
@@ -163,6 +165,13 @@ gameState.prototype = {
             }
         }
 
+        for(k = 0;k<numResources;k++){
+            r = allStructs.length;
+            allStructs[Math.floor(Math.random() * r)]["tile"].loadTexture("resource");
+            active.push(allStructs[k]);
+        }
+
+
         button = game.add.button(game.world.centerX - gameWidth/2+25, gameHeight-50, 'button', actionOnClick, this, 0, 0, 0);
         button1 = game.add.button(game.world.centerX - gameWidth/2+500, gameHeight-50, 'buttoncolor', actionOnClick2, this, 0, 0, 0);
         //button.style.background("#333333");
@@ -186,6 +195,10 @@ gameState.prototype = {
                 // Get Random Active Struct
                 myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
+
+                if(currStruct["tile"]["key"]=="resource"){
+                    return;
+                }
                 var keys = Object.keys(currStruct);
 
 
@@ -202,9 +215,12 @@ gameState.prototype = {
                     if(active[i]['tile']['key'] != currStruct['tile']['key'])
                         move = true;
 
+
+
                 // If it is a predator check for prey
                 if(move && currStruct['tile']['key'] == "predator"){
                     key = findNearest(currStruct,"prey");
+
                     for (var neighbor = 1; neighbor<keys.length; neighbor++){
                         key_check = keys[neighbor];
                         var neighborStruct = null;
