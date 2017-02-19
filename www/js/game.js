@@ -1,5 +1,5 @@
-var gameHeight = 800;
-var gameWidth  = 800;
+var gameHeight = document.documentElement.clientHeight-40;
+var gameWidth  = document.documentElement.clientWidth-20;
 
 var states = {
     game: "game",
@@ -173,6 +173,7 @@ gameState.prototype = {
     },
 
     update: function () {
+
         if(time++%50 == 0&& go==0){
 
             var myInd = Math.floor(Math.random() * active.length);
@@ -206,23 +207,24 @@ gameState.prototype = {
                     nextStruct = allStructs[currStruct[key]];
                     counter ++;
 
+
                     if(counter > 5)
                        return;
 
-                    }
-                while(nextStruct == null ||
-                    (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
+
+                }while(nextStruct == null ||
+                    (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
                 if(nextStruct['tile']['key'] == 'tile'){
                     active.push(nextStruct);
+                    active.splice(myInd,1);
+                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
+                    currStruct['tile'].loadTexture('tile'); 
+                }else{
+                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 }
-
-                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
-                currStruct['tile'].loadTexture('tile');
-                active.splice(myInd,1);
-
-                }
+            }
 
         }
 
