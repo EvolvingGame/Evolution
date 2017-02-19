@@ -27,8 +27,7 @@ a.button#game_menu{
     height:70vw;
     margin-left:10vw;
     padding-left:5vw;
-    border-style: double;
-    border-color:white;
+
 }
 
 #game-title{
@@ -64,8 +63,7 @@ font-size: 42px;
     padding:0;
     margin:0;
     text-align: center;
-    border-color: black;
-    border-style: double;
+
 }
 
 .button {
