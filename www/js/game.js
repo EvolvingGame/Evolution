@@ -184,23 +184,22 @@ gameState.prototype = {
                 var keys = Object.keys(currStruct);
                 var key;
                 var counter=0;
-                do{
-                    var cont = false;
-                    //if currStruct is a predator, look for adjacent prey.
 
-                    if(currStruct['tile']['key']=='predator'){
-                        for (var neighbor = 1; neighbor<keys.length; neighbor++){
-                            key = keys[neighbor];
-                            console.log(key);
-                            var neighborStruct = null;
-                            if (currStruct[key]!= null)
-                                neighborStruct = allStructs[currStruct[key]];
-                            if (neighborStruct !=null && neighborStruct['tile']['key'] == 'prey'){
-                                kill(neighborStruct,currStruct);
-                                neighbor = keys.length;
-                            }
+                if(currStruct['tile']['key']=='predator'){
+                    for (var neighbor = 1; neighbor<keys.length; neighbor++){
+                        key = keys[neighbor];
+                        console.log(key);
+                        var neighborStruct = null;
+                        if (currStruct[key]!= null)
+                            neighborStruct = allStructs[currStruct[key]];
+                        if (neighborStruct !=null && neighborStruct['tile']['key'] == 'prey'){
+                            kill(neighborStruct,currStruct);
+                            neighbor = keys.length;
                         }
                     }
+                }
+
+                do{
 
                     //move randomly if other rules don't apply
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
@@ -224,10 +223,6 @@ gameState.prototype = {
                 active.splice(myInd,1);
 
                 }
-
-
-            //what makes them move
-            moveRandom();
 
         }
 
