@@ -16,7 +16,10 @@ var allStructs = new Array();
 var tileHeight;
 var tileWidth;
 
+
+
 var numWide = 8;
+
 var go = 1;
 var timer = 0;
 var text;
@@ -167,19 +170,22 @@ gameState.prototype = {
             }
         }
 
-        for(k = 0;k<numResources;k++){
+
+        for(k = 0;k<numResources;k++) {
+            console.log("Made Resource");
             r = allStructs.length;
-            z = Math.floor(Math.random()*r);
+            z = Math.floor(Math.random() * r);
             allStructs[z]["tile"].loadTexture("resource");
             active.push(allStructs[z]);
-            if(k = numResources-1){
+            if (k = 0) {
                 y = Math.floor(Math.random() * r);
+                console.log("Made prey");
                 allStructs[y]["tile"].loadTexture("prey");
 
                 active.push(allStructs[y]);
             }
-        }
 
+        }
 
         button = game.add.button(game.world.centerX - gameWidth/2+25, gameHeight-50, 'button', actionOnClick, this, 0, 0, 0);
         button1 = game.add.button(game.world.centerX - gameWidth/2+500, gameHeight-50, 'buttoncolor', actionOnClick2, this, 0, 0, 0);
@@ -191,6 +197,7 @@ gameState.prototype = {
     },
 
     update: function () {
+
        gameOver = true;
         for(b = 0;b<active.length;b++){
             if(active[b]["tile"]["key"] == "prey"){
@@ -201,6 +208,20 @@ gameState.prototype = {
 
 
         if(time++%5 == 0 && go==0 && active.length > 0 &&!gameOver){
+
+
+        if(time%200 == 0){
+            var ind;
+            var count = 0;
+            do{
+                ind = Math.floor(Math.random()*allStructs.length);
+            }while(allStructs[ind]['tile']['key'] != 'tile' && count++ < 10);
+            allStructs[ind]['tile'].loadTexture('resource')
+        }
+
+
+        if(time++%2 == 0 && go==0 && active.length > 0){
+
             var myInd;
             var currStruct;
             var key;
@@ -214,10 +235,13 @@ gameState.prototype = {
                 myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
 
+
                 if(currStruct["tile"]["key"]=="resource"){
                     continue;
                 }
+
                 var keys = Object.keys(currStruct);
+
 
 
                 console.log(currStruct['time']);
@@ -252,6 +276,11 @@ gameState.prototype = {
                     }
                 }
 
+                // If it is a pey check for resources
+                if(move && currStruct['tile']['key'] == 'prey'){
+                    key = findNearest(currStruct,'resource');
+                }
+
                 // Assign a key if the key is null
                 if(move && key == null)
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
@@ -263,22 +292,31 @@ gameState.prototype = {
                     continue;
                 nextStruct = allStructs[currStruct[key]];
 
+                //if a prey is planning on going to a predator next find a new plan
                 if(currStruct!=null && currStruct['tile']['key']=='prey'&&
                     nextStruct!=null && nextStruct['tile']['key']=='predator')
                     continue;
 
+                //if the currStruct is earth or resource, do not move
+                if(currStruct != null && (currStruct['tile']['key']=='earth'
+                    || currStruct['tile']['key']=='resource')){
+                        return;
+                    }
             }while(nextStruct == null || (contains(nextStruct) && 
                 nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-
-
+            nextStruct['time']=time;
+            currStruct['time'] = time;
             if(nextStruct['tile']['key'] == 'tile'){
                 active.push(nextStruct);
-                nextStruct['time']=time;
                 active.splice(myInd,1);
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 currStruct['tile'].loadTexture('tile');
-            }else{
+            }else if(nextStruct['tile']['key'] == 'resource'){
+                currStruct['time'] = time;
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
+                active.push(nextStruct);
+            }else if(nextStruct['tile']['key'] == 'prey'){
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);
             }
 
@@ -335,7 +373,7 @@ gameState.prototype = {
 
         if(go==0&&!gameOver) {
             timer++;
-        }
+        }}
     },
 };
 
@@ -390,18 +428,21 @@ function moveRandom(currStruct){
 
 function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
-        if(tile.key == 'tile'){
+        if(tile['key']=='tile'){
             tile.loadTexture(currentColor);
-            var tileStruct = getTileStruct(tile);
-            tileStruct['time'] = time;
-            active.push(tileStruct);
-        }
-        else{
-            tile.loadTexture('tile');
-            for(var i = 0; i < active.length;i++){
-                if(active[i].tile.x==tile.x && active[i].tile.y == tile.y)
-                    active.splice(i,1);
+            if(currentColor != 'earth'&& currentColor != 'resource'){
+                var tileStruct = getTileStruct(tile);
+                active.push(tileStruct);
+                console.log('Active');
+                console.log(tileStruct);
+                console.log(active);
+                console.log(go);
             }
+        }else{
+            for(var i = 0; i < active.length;i++)
+                    if(active[i].tile.x==tile.x && active[i].tile.y == tile.y)
+                        active.splice(i,1);
+            tile.loadTexture('tile');
         }
     }
 }
@@ -432,7 +473,6 @@ function actionOnClick2(){
 }
 
 function getTileStruct(tile){
-
     var x = tile.x;
     var y = tile.y;
     var row = 0;
@@ -456,7 +496,7 @@ function compare(tileStruct1,tileStruct2){
 }
 
 function findNearest(tileStructIn,type){
-    var maxDepth = 23;
+    var maxDepth = 12;
     var tileStructList = new Array();
     var oldStructList = new Array();
     tileStructList.push(tileStructIn);
