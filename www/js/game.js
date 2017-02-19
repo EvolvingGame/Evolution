@@ -173,35 +173,56 @@ gameState.prototype = {
     },
 
     update: function () {
-        if(time++%10 == 0&& go==0){
-            if(active.length > 0){
-                var myInd = Math.floor(Math.random() * active.length);
+        if(time++%20 == 0 && go==0 && active.length > 0){
+            var myInd;
+            var currStruct;
+            var key;
+            var counter=-1;
+            var nextStruct;
+            do{
+                counter ++; // Increment count to stop infinite loop
+                key = null; // Reset Variable
+
+                // Get Random Active Struct
+                myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
                 var keys = Object.keys(currStruct);
-                var key;
-                var counter=0;
-                do{
-                    var cont = false;
-                    key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
-                    nextStruct = allStructs[currStruct[key]];
-                    counter ++;
-                    if(counter > 6)
-                        return;
-                }while(nextStruct == null || 
-                    (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
-                if(nextStruct['tile']['key'] == 'tile'){
-                    active.push(nextStruct);
-                    active.splice(myInd,1);
-                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
-                    currStruct['tile'].loadTexture('tile'); 
-                }else{
-                    nextStruct['tile'].loadTexture(currStruct['tile']['key']);
-                }
+                // Check if it has an available move
+                var move = false;
+                for(var i = 0; i < active.length; i++)
+                    if(active[i]['tile']['key'] != currStruct['tile']['key'])
+                        move = true;
+
+                // If it is a predator check for prey
+                if(move && currStruct['tile']['key'] == "predator")
+                    key = findNearest(currStruct,"prey");
+
+                // Assign a key if the key is null
+                if(move && key == null)
+                    key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
+
+                // Tried to many times, don't get stuck!
+                if(counter > 10)
+                    return;
+                if(!move)
+                    continue;
+
+                nextStruct = allStructs[currStruct[key]];
+            }while(nextStruct == null || (contains(nextStruct) && 
+                nextStruct['tile']['key'] == currStruct['tile']['key']));
+
+            if(nextStruct['tile']['key'] == 'tile'){
+                active.push(nextStruct);
+                active.splice(myInd,1);
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
+                currStruct['tile'].loadTexture('tile'); 
+            }else{
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
             }
         }
 
-text.setText(Math.round(timer/60*100)/100);
+        text.setText(Math.round(timer/60*100)/100);
         // if(go==0) {
         //     for (j = 0; j < active.length; j++) {
         //
@@ -252,9 +273,6 @@ text.setText(Math.round(timer/60*100)/100);
         if(go==0) {
             timer++;
         }
-
-
-
     },
 };
 
@@ -279,6 +297,7 @@ text.setText(Math.round(timer/60*100)/100);
 //
 //
 // };
+
 
 function contains(tileStruct){
     for(var i = 0; i < active.length; i++)
@@ -306,9 +325,6 @@ function clickHandler(tile, pointer) {
 
 
 function actionOnClick(){
-    console.log("button works");
-    console.log(timer/60);
-
     if(go ==0){
         go = 1;
     }
@@ -319,20 +335,19 @@ function actionOnClick(){
 
 
 function actionOnClick2(){
+    if(currentColor=="earth"){
+        currentColor="prey";
+        text2.setText(currentColor);
+    }else if(currentColor == "prey"){
+        currentColor="predator";
+        text2.setText(currentColor);    
+    }
+    else{
+        currentColor = "earth";
+        text2.setText(currentColor);
+    }
+}
 
-    console.log("button2 works");
-if(currentColor=="earth"){
-    currentColor="prey";
-    text2.setText(currentColor);
-}
-else{
-    currentColor = "earth";
-    text2.setText(currentColor);
-}
-}
-
-function getTile(tile) {
-}
 function getTileStruct(tile){
 
     var x = tile.x;
@@ -347,7 +362,49 @@ function getTileStruct(tile){
     col = Math.floor(x/(tileWidth*0.75)/2);
     var index = numWide*row-Math.floor(row/2)+col;
     return allStructs[index];
+}
 
+function compare(tileStruct1,tileStruct2){
+    if(tileStruct1['file']['x'] == tileStruct2['file']['x'] &&
+        tileStruct1['file']['y'] == tileStruct2['file']['y'])
+        return true;
+    else
+        return false;
+}
+
+function findNearest(tileStructIn,type){
+    var maxDepth = 23;
+    var tileStructList = new Array();
+    var oldStructList = new Array();
+    tileStructList.push(tileStructIn);
+    while(tileStructList.length > 0){
+        if(maxDepth < 0)
+            return null;
+        var tileStruct = tileStructList.shift();
+        if(tileStruct == null)
+            continue;
+        oldStructList.push(tileStruct);
+        var vals = new Array();
+        var keys = Object.keys(tileStruct);
+        while(vals.length < keys.length){
+            var gen = Math.floor(Math.random()*(keys.length-1))+1;
+            var add = true;
+            for(var i = 0; i < vals.length; i++)
+                if(gen == vals[i])
+                    add = false;
+            if(add)
+                vals.push(keys[gen]);
+        }
+        for(var i = 0; i < vals.length;i++)
+            if(allStructs[tileStruct[vals[i]]] != null)
+                if(allStructs[tileStruct[vals[i]]]['tile']['key'] == type){
+                    return vals[i];
+                }
+                else{
+                    tileStructList.push(allStructs[tileStruct[vals[i]]]);
+                }
+        maxDepth--;
+    }
 }
 
 var game = new Phaser.Game(gameWidth,gameHeight, Phaser.AUTO, 'gameDiv');
