@@ -188,6 +188,14 @@ gameState.prototype = {
                 currStruct = active[myInd];
                 var keys = Object.keys(currStruct);
 
+
+                console.log(currStruct['time']);
+                if(time-currStruct['time'] > 200){
+                    currStruct['tile'].loadTexture('tile');
+                    currStruct['time']=0;
+                    active.splice(myInd,1);
+                }
+
                 // Check if it has an available move
                 var move = false;
                 for(var i = 0; i < active.length; i++)
@@ -195,8 +203,20 @@ gameState.prototype = {
                         move = true;
 
                 // If it is a predator check for prey
-                if(move && currStruct['tile']['key'] == "predator")
+                if(move && currStruct['tile']['key'] == "predator"){
                     key = findNearest(currStruct,"prey");
+                    for (var neighbor = 1; neighbor<keys.length; neighbor++){
+                        key_check = keys[neighbor];
+                        var neighborStruct = null;
+                        if (currStruct[key_check]!= null)
+                            neighborStruct = allStructs[currStruct[key_check]];
+                        if (neighborStruct !=null && neighborStruct['tile']['key'] == 'prey'){
+                            // kill(neighborStruct,currStruct);
+                            // return;
+                            key = key_check;
+                        }
+                    }
+                }
 
                 // Assign a key if the key is null
                 if(move && key == null)
@@ -207,22 +227,31 @@ gameState.prototype = {
                     return;
                 if(!move)
                     continue;
-
                 nextStruct = allStructs[currStruct[key]];
+
+                if(currStruct!=null && currStruct['tile']['key']=='prey'&&
+                    nextStruct!=null && nextStruct['tile']['key']=='predator')
+                    continue;
+
             }while(nextStruct == null || (contains(nextStruct) && 
                 nextStruct['tile']['key'] == currStruct['tile']['key']));
 
+
+
             if(nextStruct['tile']['key'] == 'tile'){
                 active.push(nextStruct);
+                nextStruct['time']=time;
                 active.splice(myInd,1);
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);
-                currStruct['tile'].loadTexture('tile'); 
+                currStruct['tile'].loadTexture('tile');
             }else{
                 nextStruct['tile'].loadTexture(currStruct['tile']['key']);
             }
+
         }
 
         text.setText(Math.round(timer/60*100)/100);
+
         // if(go==0) {
         //     for (j = 0; j < active.length; j++) {
         //
@@ -307,11 +336,31 @@ function contains(tileStruct){
 
 }
 
+function kill(preyStruct, predatorStruct){
+    preyStruct.tile.loadTexture('predator');
+    predatorStruct.tile.loadTexture('tile');
+
+    for (var index; index < active.length; index++){
+        if( predatorStruct['tile']['x'] == active[index]['tile']['x'] &&
+        predatorStruct['tile']['y'] == active[index]['tile']['y']){
+            active.splice(index,1);
+            break;
+        }
+    }
+}
+
+function moveRandom(currStruct){
+
+
+}
+
 function clickHandler(tile, pointer) {
     if (pointer.leftButton.isDown) {
         if(tile.key == 'tile'){
             tile.loadTexture(currentColor);
-            active.push(getTileStruct(tile));
+            var tileStruct = getTileStruct(tile);
+            tileStruct['time'] = time;
+            active.push(tileStruct);
         }
         else{
             tile.loadTexture('tile');
