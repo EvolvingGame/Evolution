@@ -34,7 +34,21 @@ a.button#game_menu{
 #game-title{
     color:white;
     font-size: 10vw;
-    margin:20vw 0;
+    margin:10vw 25vw;
+    text-align: center;
+}
+
+.text{
+    font-size:24px;
+}
+.textmed{
+font-size: 32px;
+    color:white;
+}
+.textlarge{
+font-size: 42px;
+
+    color:white;
 }
 
 .nav {
@@ -50,6 +64,8 @@ a.button#game_menu{
     padding:0;
     margin:0;
     text-align: center;
+    border-color: black;
+    border-style: double;
 }
 
 .button {
@@ -64,8 +80,9 @@ a.button#game_menu{
     border-left: 1px solid #CCCCCC;
     border-color: white;
     border-style: double;
-    width:60vw;
+    width:20vw;
     height:10vw;
+    margin-left:0vw;
 }
 
 .atag{
@@ -78,4 +95,8 @@ a.button#game_menu{
     background-color: mediumblue;
     color: white;
     font-size: xx-large;
+}
+
+#gameDiv1{
+    margin-left:60vw;
 }
