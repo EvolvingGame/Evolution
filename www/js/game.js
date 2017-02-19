@@ -171,8 +171,8 @@ gameState.prototype = {
 
                     if(counter > 5)
                        return;
-                }                
-                
+                                
+
                 }while(nextStruct == null || 
                     (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
