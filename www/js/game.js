@@ -59,10 +59,89 @@ gameState.prototype = {
         }
 
         for(i = 0; i < allTiles.length; i++){
-            var tileStuct = {tile:allTiles[i],
-                upLeft:allTiles[i-numWide],up:allTiles[i-(2*numWide-1)],upRights:allTiles[i-(numWide-1)],
-                downLeft:allTiles[i+(numWide-1)], down:allTiles[i+(numWide*2-1)], downRigth:allTiles[i+numWide]};
-            allStructs.push(tileStuct);
+
+            //get useful variables
+            var numRows = Math.ceil(i/numWide);
+            var numOddRows= Math.floor(numRows/2);
+
+           //set neighbor values
+            var upLeft = i-numWide;
+            var up = i-(2*numWide-1);
+            var upRight = i-(numWide-1);
+            var dnLeft = i+(numWide-1);
+            var dn = i+(numWide*2-1);
+            var dnRight = i+numWide;
+
+            //initialize the tileStruct
+            var tileStruct = {tile:allTiles[i],
+                            upLeft:null,up:null,upRight:null,
+                            downLeft:null, down:null, downRight:null};
+
+
+            var isLefttile=false;
+            var isRighttile=false;
+            var isToptile=false;
+            var isBottile=false;
+
+            //if tile is on left side left neighbors don't exist
+            if (i%(2*numWide-1)==0){
+                isLefttile=true;
+                tileStruct[upLeft]=null;
+                tileStruct[dnLeft]=null;
+                tileStruct
+            }
+            //if tile is on right side right neighbors don't exist
+            else if(i==numWide*numRows-numOddRows-1){
+                isRighttile=true;
+                tileStruct[upRight]=null;
+                tileStruct[dnRight]=null;
+            }
+
+            //a tile can be on both right or left side and also on the top or bottom
+
+            //if on top
+            if(i<numWide-1){
+                isToptile=true;
+                tileStruct[upLeft]=null;
+                tileStruct[upRight]=null;
+            }
+            //else if on bottom
+            else if(i>allTiles.length-numWide){
+                isBottile=true;
+                tileStruct[dnLeft]=null;
+                tileStruct[dnRight]=null;
+            }
+            if(isToptile)
+                if(isRighttile)
+                    tileStruct = {tile:allTiles[i], upLeft:null,up:null,upRight:null,
+                                 downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:null};
+                else if(isLefttile)
+                    tileStruct = {tile:allTiles[i], upLeft:null,up:null,upRight:null,
+                                 downLeft:null, down:allTiles[dn], downRight:allTiles[dnRight]};
+                else
+                    tileStruct = {tile:allTiles[i], upLeft:null,up:null,upRight:null,
+                                 downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:allTiles[dnRight]};
+            else if(isBottile)
+                if(isRighttile)
+                    tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:null,
+                                 downLeft:null, down:null, downRight:null};
+                else if(isLefttile)
+                    tileStruct = {tile:allTiles[i], upLeft:null,up:allTiles[up],upRight:allTiles[upRight],
+                                 downLeft:null, down:null, downRight:null};
+                else
+                    tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:allTiles[upRight],
+                                 downLeft:null, down:null, downRight:null};
+            else if(isLefttile)
+                    tileStruct = {tile:allTiles[i], upLeft:null,up:allTiles[up],upRight:allTiles[upRight],
+                                 downLeft:null, down:allTiles[dn], downRight:allTiles[dnRight]};
+            else if(isRighttile)
+                    tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:null,
+                                 downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:null};
+            else
+                tileStruct = {tile:allTiles[i], upLeft:allTiles[upLeft],up:allTiles[up],upRight:allTiles[upRight],
+                             downLeft:allTiles[dnLeft], down:allTiles[dn], downRight:allTiles[dnRight]};
+
+            allStructs.push(tileStruct);
         }
     },
 
