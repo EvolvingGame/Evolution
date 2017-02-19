@@ -186,8 +186,7 @@ gameState.prototype = {
                     console.log(active.length);
 
                     counter ++;
-                    if (counter==6 && nextStruct != null) break;
-
+                  
                 }                
                 while(nextStruct == null || (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
