@@ -58,7 +58,7 @@ gameState.prototype = {
                     tile.events.onInputDown.add(clickHandler, this);
                     nextTile = {'tile':tile,
                             'upLeft':null,'up':null,'upRight':null,
-                            'downLeft':null, 'down':null, 'downRight':null,'poop' :true};
+                            'downLeft':null, 'down':null, 'downRight':null};
                 }
                 allStructs.push(nextTile);
             }
@@ -91,14 +91,10 @@ gameState.prototype = {
             //if tile is on left side left neighbors don't exist
             if (i%(2*numWide-1)==0){
                 isLefttile=true;
-                console.log("LEFT SIDE");
-                console.log(i);
             }
             //if tile is on right side right neighbors don't exist
             else if(i==numWide*numRows-numOddRows-1 && numRows%2==1){
                 isRighttile=true;
-                console.log("RIGTH SIDE");
-                console.log(i);
             }
 
             //a tile can be on both right or left side and also on the top or bottom
@@ -106,25 +102,17 @@ gameState.prototype = {
             //if on top
             if(i<numWide){
                 isToptile=true;
-                console.log("TOP SIDE");
-                console.log(i);
             }
             //else if on bottom
             else if(i>allStructs.length-numWide-1){
-                console.log("BOTTOM SIDE");
-                console.log(i);
                 isBottile=true;
             }
 
             if(i >= numWide && i <= 2*(numWide-1)){
                 isTopOdd=true;
-                console.log("TOP ODD");
-                console.log(i);
             }
             else if(i <= (allStructs.length-numWide-1) && i > (allStructs.length-2*(numWide))){
                 isBotOdd=true;
-                console.log("BOT ODD");
-                console.log(i);
             }
 
             if(isToptile)
@@ -164,9 +152,6 @@ gameState.prototype = {
                 allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':upRight,
                              'downLeft':dnLeft, 'down':dn, 'downRight':dnRight};
             }
-
-            if(allStructs['poop'])
-                console.log("ERROR");
         }
     },
 
@@ -182,14 +167,11 @@ gameState.prototype = {
                     var cont = false;
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
-
-                    console.log(active.length);
-
                     counter ++;
-                    if (counter==6 && nextStruct != null) break;
-
-                }                
-                while(nextStruct == null || (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
+                    if(counter > 5)
+                        return;
+                }while(nextStruct == null || 
+                    (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
 
                 if(nextStruct['tile']['key'] == 'tile'){
                     active.push(nextStruct);
