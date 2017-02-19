@@ -11,7 +11,7 @@ var gameState = function(game){
 
 var hexagons = new Array();
 var active = new Array();
-var check = 0;
+var time = 0;
 gameState.prototype = {
 
     preload: function () {
@@ -20,42 +20,51 @@ gameState.prototype = {
     },
 
     create: function () {
-      var hexWidth= 696;
-      var hexHeight = 800;
-      var numWide = 6;
-      // Desired Tile Width
-      var tileWidth = Math.trunc(gameWidth / (numWide*3/2));
-      var tileHeight = tileWidth  / hexWidth * hexHeight;
-      var numHigh = Math.trunc(gameHeight / tileHeight);
+        var hexWidth= 696;
+        var hexHeight = 800;
+        var numWide = 6;
+        // Desired Tile Width
+        var tileWidth = Math.trunc(gameWidth / (numWide*3/2));
+        var tileHeight = tileWidth  / hexWidth * hexHeight;
+        var numHigh = Math.trunc(gameHeight / tileHeight);
+        
+        var nextTile = {tile:null,upLeft:null,up:null,upRight:null,downLeft:null,down:null,downRight:null};
 
-      for(i = 0; i < numWide; i++){
+        var past = [new Array();new Array(); new Array()];
+
         for(j = 0; j < numHigh; j++){
-          tile = game.add.sprite(1.5*i*tileWidth,j*tileHeight,'tile');
-          tile.height = tileHeight;
-          tile.width = tileWidth;
-          tile.inputEnabled = true;
-          tile.events.onInputDown.add(clickHandler, this);
-          var nextTile = {tile:tile, x:i, y:j};
-          hexagons.push(nextTile);
+            for(i = 0; i < numWide; i++){
+                tile = game.add.sprite(1.5*i*tileWidth,j*tileHeight,'tile');
+                tile.height = tileHeight;
+                tile.width = tileWidth;
+                tile.inputEnabled = true;
+                tile.events.onInputDown.add(clickHandler, this);
+                nextTile = {tile:tile, x:i, y:j};
+                hexagons.push(nextTile);
+                if(past[0].length <= numWide)
+                    past[0].push(nextTile);
+                else
+                    past[1].push(nextTile);
+            }
         }
-      }
-      for(i = 0; i < numWide-1; i++){
+
         for(j = 0; j < numHigh-1; j++){
-          tile = game.add.sprite((1.5*i+0.75)*tileWidth,(j+0.5)*tileHeight,'tile');
-          tile.height = tileHeight;
-          tile.width = tileWidth;
-          tile.inputEnabled = true;
-          tile.events.onInputDown.add(clickHandler, this);
-          var nextTile = {tile:tile, x:i, y:j};
-          hexagons.push(nextTile);
-         }
-      }
+            for(i = 0; i < numWide-1; i++){
+                tile = game.add.sprite((1.5*i+0.75)*tileWidth,(j+0.5)*tileHeight,'tile');
+                tile.height = tileHeight;
+                tile.width = tileWidth;
+                tile.inputEnabled = true;
+                tile.events.onInputDown.add(clickHandler, this);
+                var nextTile = {tile:tile, x:i, y:j};
+                hexagons.push(nextTile);
+            }
+        }
     },
 
     update: function () {
+        if(time++%100 == 0){
 
-
-
+        }
     },
 };
 
