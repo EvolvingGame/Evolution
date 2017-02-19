@@ -15,11 +15,13 @@ var time = 0;
 var allStructs = new Array();
 var tileHeight;
 var tileWidth;
+
 var numWide = 5;
 var go = 0;
 var timer = 0;
 var text;
 var currentColor = "earth";
+
 
 gameState.prototype = {
 
@@ -34,7 +36,7 @@ game.load.image('button', 'img/start.png')
 
     create: function () {
         var hexWidth= 696;
-        var hexHeight = 800;
+        var hexHeight = 1600;
 
         // Desired Tile Width
         tileWidth = Math.trunc(gameWidth / (numWide*3/2));
@@ -45,7 +47,6 @@ game.load.image('button', 'img/start.png')
 
         for(var j = 0; j < numHigh; j++){
             for(var i = 0; i < numWide; i++){
-                // var nextTile = {tile:null,x:null,y:null};
                 var nextTile;
                 if(j%2==0){
                     tile = game.add.sprite(1.5*i*tileWidth,(j/2)*tileHeight,'tile');
@@ -66,7 +67,7 @@ game.load.image('button', 'img/start.png')
                     tile.events.onInputDown.add(clickHandler, this);
                     nextTile = {'tile':tile,
                             'upLeft':null,'up':null,'upRight':null,
-                            'downLeft':null, 'down':null, 'downRight':null,'poop' :true};
+                            'downLeft':null, 'down':null, 'downRight':null};
                 }
                 allStructs.push(nextTile);
             }
@@ -99,35 +100,27 @@ game.load.image('button', 'img/start.png')
             //if tile is on left side left neighbors don't exist
             if (i%(2*numWide-1)==0){
                 isLefttile=true;
-                console.log("LEFT SIDE");
-                console.log(i);
             }
             //if tile is on right side right neighbors don't exist
-            else if(i==numWide*numRows-numOddRows-1){
+            else if(i==numWide*numRows-numOddRows-1 && numRows%2==1){
                 isRighttile=true;
-                console.log("RIGTH SIDE");
-                console.log(i);
             }
 
             //a tile can be on both right or left side and also on the top or bottom
 
             //if on top
-            if(i<numWide-1){
+            if(i<numWide){
                 isToptile=true;
-                console.log("TOP SIDE");
-                console.log(i);
             }
             //else if on bottom
-            else if(i>allStructs.length-numWide){
-                console.log("BOTTOM SIDE");
-                console.log(i);
+            else if(i>allStructs.length-numWide-1){
                 isBottile=true;
             }
 
-            if(i>numWide&&i<2*(numWide-1)){
+            if(i >= numWide && i <= 2*(numWide-1)){
                 isTopOdd=true;
             }
-            else if(i < (allStructs.length-numWide) && i > (allStructs.length-2*(numWide-1))){
+            else if(i <= (allStructs.length-numWide-1) && i > (allStructs.length-2*(numWide))){
                 isBotOdd=true;
             }
 
@@ -168,9 +161,6 @@ game.load.image('button', 'img/start.png')
                 allStructs[i] = {'tile':tile,'upLeft':upLeft,'up':up,'upRight':upRight,
                              'downLeft':dnLeft, 'down':dn, 'downRight':dnRight};
             }
-
-            if(allStructs['poop'])
-                console.log("ERROR");
         }
 
         button = game.add.button(game.world.centerX - gameWidth/2+25, gameHeight-50, 'button', actionOnClick, this, 0, 0, 0);
@@ -183,28 +173,35 @@ game.load.image('button', 'img/start.png')
     },
 
     update: function () {
-
         if(time++%50 == 0&& go==0){
-            for(var myInd = 0; myInd < active.length; myInd++){
-                console.log("I is: ");
-                console.log(myInd);
+            if(active.length > 0){
+                var myInd = Math.floor(Math.random() * active.length);
                 currStruct = active[myInd];
                 var keys = Object.keys(currStruct);
                 var key;
+                var counter=0;
                 do{
+                    var cont = false;
                     key = keys[Math.floor((Math.random() * keys.length-1) + 1)];
                     nextStruct = allStructs[currStruct[key]];
-                    console.log(active.length);
-                }                
-                while(nextStruct == null || contains(nextStruct));
+                    counter ++;
 
-                nextStruct['tile'].loadTexture("earth");
+                    if(counter > 5)
+                       return;
+                                
+
+                }while(nextStruct == null || 
+                    (contains(nextStruct) && nextStruct['tile']['key'] == currStruct['tile']['key']));
+
+
+                if(nextStruct['tile']['key'] == 'tile'){
+                    active.push(nextStruct);
+                }
+
+                nextStruct['tile'].loadTexture(currStruct['tile']['key']);
                 currStruct['tile'].loadTexture('tile');
-                console.log("I is: ");
-                console.log(myInd);
-                console.log(active.splice(myInd,1));
-                active.push(nextStruct);
-                console.log(active);
+                active.splice(myInd,1);
+                
             }
         }
 
@@ -353,7 +350,6 @@ function getTileStruct(tile){
     row = Math.round(row);
     col = Math.floor(x/(tileWidth*0.75)/2);
     var index = numWide*row-Math.floor(row/2)+col;
-    console.log(index);
     return allStructs[index];
 
 }
