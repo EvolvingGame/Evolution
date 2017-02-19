@@ -26,9 +26,7 @@ gameState.prototype = {
         // Desired Tile Width
         var tileWidth = Math.trunc(gameWidth / (numWide*3/2));
         var tileHeight = tileWidth  / hexWidth * hexHeight;
-        var numHigh = Math.trunc(gameHeight / tileHeight);
-        
-//        var nextTile = {tile:null,upLeft:null,up:null,upRight:null,downLeft:null,down:null,downRight:null};
+        var numHigh = Math.trunc(gameHeight / tileHeight);        
 
         for(j = 0; j < numHigh; j++){
             for(i = 0; i < numWide; i++){
@@ -39,10 +37,6 @@ gameState.prototype = {
                 tile.events.onInputDown.add(clickHandler, this);
                 var nextTile = {tile:tile, x:i, y:j};
                 hexagons.push(nextTile);
-//                if(past[0].length <= numWide)
-//                    past[0].push(nextTile);
-//                else
-//                    past[1].push(nextTile);
             }
         }
 
@@ -54,7 +48,6 @@ gameState.prototype = {
                 tile.inputEnabled = true;
                 tile.events.onInputDown.add(clickHandler, this);
                 var nextTile = {tile:tile, x:i, y:j};
-//                hexagons.push(nextTile);
             }
         }
     },
@@ -85,5 +78,3 @@ function clickHandler(tile, pointer) {
 var game = new Phaser.Game(gameWidth,gameHeight, Phaser.AUTO, 'gameDiv');
 game.state.add(states.game, gameState);
 game.state.start(states.game);
-
-
