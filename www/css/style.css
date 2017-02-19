@@ -1,1 +1,67 @@
 /* Empty. Add your own CSS if you like */
+.background{
+
+    width:100vw;
+    height:100vw;
+}
+
+.mainbody{
+    width: 60vw;
+    height:70vw;
+    margin-left:20vw;
+
+}
+
+.mainbodyHTP{
+    width: 80vw;
+    height:70vw;
+    margin-left:10vw;
+    padding-left:5vw;
+ border-style: double;
+    border-color:white;
+}
+.text{
+
+color:white;
+}
+
+.nav {
+    width:30vw;
+    height:10vw;
+    background-color: mediumblue;
+    color: white;
+    font-size: xx-large;
+
+
+
+}
+.contentbody{
+    width:40vw;
+    height:40vw;
+    padding: auto;
+}
+.button {
+    font-size:xx-large;
+    text-decoration: none;
+    background-color: mediumblue;
+    color: white;
+    padding: 2px 6px 2px 6px;
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+    width:30vw;
+    height:10vw;
+}
+
+.atag{
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+    width:40vw;
+    height:10vw;
+    background-color: mediumblue;
+    color: white;
+    font-size: xx-large;
+}
